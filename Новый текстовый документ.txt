@@ -1,0 +1,77 @@
+package com.company.tests;
+
+import com.company.trianglez.Trianglez;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class TrianglezTest {
+    private final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+    private final ByteArrayOutputStream outErr = new ByteArrayOutputStream();
+    private final PrintStream origErr = System.err;
+
+
+    @Test
+    void checkIsTriangleExists(){
+        assertTrue(Trianglez.checkIsTriangleExists(3,4,5));
+        assertTrue(Trianglez.checkIsTriangleExists(2,2,3));
+        assertTrue(Trianglez.checkIsTriangleExists(1,1,1));
+
+        assertFalse(Trianglez.checkIsTriangleExists(-1,2,3));
+        assertFalse(Trianglez.checkIsTriangleExists(1,2,3));
+
+    }
+
+// Поток вывода подставляем
+        @BeforeEach
+        public void setStream(){
+        System.setOut(new PrintStream(outErr));
+            System.setOut(new PrintStream(origErr));
+        }
+
+        //Восстанавливаем что бы выводился в нормальном виде
+        @AfterEach
+    public void restore(){
+        System.setOut(origErr);
+        System.setOut(outErr);
+        
+        
+        }
+
+        @Test
+    public void hello(){
+            System.out.print("hello");
+            assertEquals("hello",out.toString());
+        }
+
+        @Test
+    public void equilateral(){
+        Trianglez.checkTriangle(1,1,1);
+        assertEquals("Equilateral triangle\r\n",out.toString());
+        }
+
+        @Test
+    public void isosceles(){
+        Trianglez.checkTriangle(2,3,3);
+        assertEquals("Isosceles triangle\r\n" ,out.toString());
+        }
+
+        @Test
+    public void scalene(){
+        Trianglez.checkTriangle(3,4,6);
+        assertEquals("Scalene triangle\r\n" , out.toString());
+        }
+
+        @Test
+    public void invalid(){
+        Trianglez.checkTriangle(0,3,4);
+        assertEquals("Error, the triangle is not valid\r\n",outErr.toString());
+        }
+   
+    }
